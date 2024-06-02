@@ -31,7 +31,16 @@ function App() {
     const long = position.coords.longitude;
 
     const mark = { geocode: [lat, long], popUp: "El bus XXX"};
-    setMarkers([mark]);
+
+    if(markers){
+      const [previosLatitude, previosLongitude] = markers[0].geocode;
+      if(lat !== previosLatitude || long !== previosLongitude){
+        setMarkers([mark]);
+      }
+    }else{
+      setMarkers([mark]);
+    }
+
   };
 
   function error(err){
@@ -40,13 +49,24 @@ function App() {
   }
 
   React.useEffect(() => {
-    const geolocation = navigator.geolocation;
-     if (geolocation) {
-        // Obtener ubicación actual del cliente
-        geolocation.getCurrentPosition(clientCoords, error);
-      } else {
-        alert('Geolocation is not supported by this browser.');
-      }
+    console.log("Montando useEffect - Maper Page");
+
+    const interval = setInterval(() => {
+      const geolocation = navigator.geolocation;
+       if (geolocation) {
+          // Obtener ubicación actual del cliente
+          geolocation.getCurrentPosition(clientCoords, error);
+        } else {
+          alert('Geolocation is not supported by this browser.');
+        }
+    }, 10000);
+
+
+    return () => {
+      clearInterval(interval);
+      console.log("Desmontando useEffect - Maper Page");
+    }
+
   }, []);
 
   return (

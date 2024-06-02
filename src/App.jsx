@@ -10,7 +10,7 @@ import MarkerClusterGroup from 'react-leaflet-cluster';
 
 function App() {
 
-  const [markers, setMarkers] = React.useState([]);
+  const [markers, setMarkers] = React.useState(null);
 
   const customIcon = new Icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/128/0/622.png",
@@ -50,22 +50,24 @@ function App() {
   }, []);
 
   return (
-    <MapContainer center={[48.8566, 2.3522]} zoom={13} >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <MarkerClusterGroup
-        chunkedLoading
-        iconCreateFunction={createCustomClusterIcon}
-      >
-        {markers.map(marker => (
-          <Marker key={marker.popUp} position={marker.geocode} icon={customIcon} >
-            <Popup>{marker.popUp}</Popup>
-          </Marker>
-        ))}
-      </MarkerClusterGroup>
-    </MapContainer>
+    markers && (
+      <MapContainer center={markers[0].geocode} zoom={17} >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <MarkerClusterGroup
+          chunkedLoading
+          iconCreateFunction={createCustomClusterIcon}
+        >
+          {markers.map(marker => (
+            <Marker key={marker.popUp} position={marker.geocode} icon={customIcon} >
+              <Popup>{marker.popUp}</Popup>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
+      </MapContainer>
+    )
   )
 }
 
